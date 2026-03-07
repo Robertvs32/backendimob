@@ -25,11 +25,11 @@ CREATE TABLE usuarios(
     nome VARCHAR(50),
     email VARCHAR(100),
     password_hash VARCHAR(100),
-    roles INT NOT NULL DEFAULT 1,
+    roles ENUM('adm', 'financeiro', 'corretor'),
     created_at DATETIME DEFAULT (NOW()),
 
     CONSTRAINT pk_id_usuarios PRIMARY KEY (id),
-    CONSTRAINT fk_id_empresa FOREIGN KEY (id_empresa) REFERENCES empresas(id)
+    CONSTRAINT fk_id_empresa_usuarios FOREIGN KEY (id_empresa) REFERENCES empresas(id)
 );
 
 CREATE TABLE propostas_venda(
@@ -45,8 +45,8 @@ CREATE TABLE propostas_venda(
     created_at DATETIME DEFAULT (NOW()),
 
     CONSTRAINT pk_id_propostas PRIMARY KEY (id),
-    CONSTRAINT fk_id_empresa FOREIGN KEY (id_empresa) REFERENCES empresas(id),
-    CONSTRAINT fk_id_imovel FOREIGN KEY (id_imovel) REFERENCES imoveis(id)
+    CONSTRAINT fk_id_empresa_venda FOREIGN KEY (id_empresa) REFERENCES empresas(id),
+    CONSTRAINT fk_id_imovel_venda FOREIGN KEY (id_imovel) REFERENCES imoveis(id)
 );
 
 CREATE TABLE propostas_locacao(
@@ -59,7 +59,11 @@ CREATE TABLE propostas_locacao(
     data_admissao DATE,
     valor_proposta DECIMAL(10,2),
     status ENUM('Aguardando documentos', 'Enviado para analise de credito', 'Aguardando assinatura de contrato', 'Finalizado'),
-    created_at DATETIME DEFAULT (NOW())
+    created_at DATETIME DEFAULT (NOW()),
+
+    CONSTRAINT pk_id_locacao PRIMARY KEY (id),
+    CONSTRAINT fk_id_empresa_locaco FOREIGN KEY (id_empresa) REFERENCES empresas(id),
+    CONSTRAINT fk_id_imovel_locacao FOREIGN KEY (id_imovel) REFERENCES imoveis(id)
 );
 
 CREATE TABLE clientes(
@@ -67,7 +71,7 @@ CREATE TABLE clientes(
     nome VARCHAR(100),
     rg VARCHAR(20),
     cpf VARCHAR(20),
-    renda_bruta DECIMAL(12,2) DEFAULT 0 NOT NULL,
+    renda_bruta DECIMAL(12,2) DEFAULT(0) NOT NULL,
     estado_civil ENUM('Solteiro(a)', 'Casado(a)', 'Viuvo(a)', 'Divorciado(a)') NOT NULL,
     telefone VARCHAR(30) NOT NULL,
     email VARCHAR(100) NOT NULL,
@@ -80,5 +84,7 @@ CREATE TABLE clientes(
     link_irpf VARCHAR(512) DEFAULT NULL,
     link_residencia VARCHAR(512) DEFAULT NULL,
     link_certidao VARCHAR(512) DEFAULT NULL,
-    created_at DATETIME DEFAULT (NOW())
+    created_at DATETIME DEFAULT (NOW()),
+
+    CONSTRAINT pk_id_clientes PRIMARY KEY(id)
 );
